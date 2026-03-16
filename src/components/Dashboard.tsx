@@ -214,7 +214,7 @@ const Dashboard: React.FC = () => {
             <div className="absolute top-0 right-0 p-4">
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-color)]/10 border border-[var(--accent-color)]/30">
                 <Brain className="w-4 h-4 text-[var(--accent-color)]" />
-                <span className="text-[10px] font-black text-[var(--accent-color)] uppercase tracking-widest">AI Prediction Active</span>
+                <span className="text-[10px] font-black text-[var(--accent-color)] uppercase tracking-widest">AI  Active</span>
               </div>
             </div>
             
