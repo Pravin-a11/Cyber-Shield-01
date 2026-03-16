@@ -1,0 +1,189 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {uid}
+    // Fields:
+    //   - uid: string (required) - Firebase Auth UID
+    //   - email: string (required) - User email
+    //   - name: string - Full name
+    //   - role: string (required, enum: citizen, officer)
+    //   - rank: string (optional)
+    //   - department: string (optional)
+    //   - phone: string (optional)
+    //   - profile_photo: string (optional)
+    //   - success_rate: number (optional)
+    //   - cases_solved: number (optional)
+    //   - cases_pending: number (optional)
+    //   - recovered_amount: number (optional)
+    //   - created_at: timestamp (optional)
+    //
+    // Collection: complaints
+    // Document ID: {complaintId}
+    // Fields:
+    //   - complaint_id: string (required)
+    //   - victim_name: string (required)
+    //   - phone: string
+    //   - email: string
+    //   - fraud_type: string (required)
+    //   - amount: number
+    //   - location: string
+    //   - bank_name: string
+    //   - transaction_id: string
+    //   - description: string
+    //   - incident_date: timestamp
+    //   - evidence_url: string
+    //   - status: string (enum: pending, investigating, resolved, closed)
+    //   - citizen_id: string (required, UID)
+    //   - officer_id: string (UID)
+    //   - risk_score: number
+    //   - created_at: timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'officer') ||
+         request.auth.token.email == "hp949504@gmail.com");
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string && data.uid.size() > 0 &&
+             data.email is string && data.email.size() > 0 &&
+             data.role in ['citizen', 'officer'];
+    }
+
+    function isValidComplaint(data) {
+      return data.keys().hasAll(['complaint_id', 'victim_name', 'fraud_type', 'citizen_id']) &&
+             data.complaint_id is string &&
+             data.victim_name is string && data.victim_name.size() < 100 &&
+             data.fraud_type is string &&
+             data.citizen_id is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{uid} {
+      allow read: if isAuthenticated() && (isOwner(uid) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(uid) && isValidUser(request.resource.data) && (request.resource.data.role == 'citizen' || isAdmin());
+      allow update: if isAuthenticated() && (isAdmin() || (isOwner(uid) && request.resource.data.role == resource.data.role));
+    }
+
+    match /complaints/{complaintId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.citizen_id) || isAdmin());
+      allow create: if isAuthenticated() && isValidComplaint(request.resource.data) && request.resource.data.citizen_id == request.auth.uid;
+      allow update: if isAuthenticated() && (isAdmin() || (isOwner(resource.data.citizen_id) && request.resource.data.status == resource.data.status));
+      allow delete: if isAdmin();
+    }
+
+    match /criminals/{criminalId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /atms/{atmId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /settings/{settingKey} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /system_meta/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /intelligence_meta/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /intelligence_dossiers/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /officers/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /officer_stats/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /fraud_predictions/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /live_threats/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /scam_numbers/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /scam_reports/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /scam_calls/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /evidence/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /evidence_files/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /evidence_ledger/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /crime_locations/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

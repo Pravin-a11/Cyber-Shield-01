@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["citizen", "officer"] },
+        "rank": { "type": "string" },
+        "department": { "type": "string" },
+        "phone": { "type": "string" },
+        "profile_photo": { "type": "string" },
+        "success_rate": { "type": "number" },
+        "cases_solved": { "type": "number" },
+        "cases_pending": { "type": "number" },
+        "recovered_amount": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Complaint": {
+      "title": "Complaint",
+      "description": "Cyber crime complaint details",
+      "type": "object",
+      "properties": {
+        "complaint_id": { "type": "string" },
+        "victim_name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "fraud_type": { "type": "string" },
+        "amount": { "type": "number" },
+        "location": { "type": "string" },
+        "bank_name": { "type": "string" },
+        "transaction_id": { "type": "string" },
+        "description": { "type": "string" },
+        "incident_date": { "type": "string", "format": "date-time" },
+        "evidence_url": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "investigating", "resolved", "closed"] },
+        "citizen_id": { "type": "string", "description": "UID of the citizen who filed" },
+        "officer_id": { "type": "string", "description": "UID of the assigned officer" },
+        "risk_score": { "type": "number" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["complaint_id", "victim_name", "fraud_type", "citizen_id"]
+    },
+    "Criminal": {
+      "title": "Criminal",
+      "description": "Criminal record in the database",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "criminal_id": { "type": "string" },
+        "alias": { "type": "string" },
+        "age": { "type": "number" },
+        "crime_type": { "type": "string" },
+        "fraud_types": { "type": "string" },
+        "risk_level": { "type": "string" },
+        "risk_score": { "type": "number" },
+        "history": { "type": "string" },
+        "associates": { "type": "string" },
+        "location": { "type": "string" },
+        "photo_url": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ATM": {
+      "title": "ATM",
+      "description": "ATM risk information",
+      "type": "object",
+      "properties": {
+        "location": { "type": "string" },
+        "risk_score": { "type": "number" },
+        "last_incident": { "type": "string", "format": "date-time" },
+        "alert_level": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" }
+      }
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "System settings",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System notification",
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles" },
+    "/complaints/{complaintId}": { "schema": "Complaint", "description": "Crime complaints" },
+    "/criminals/{criminalId}": { "schema": "Criminal", "description": "Criminal database" },
+    "/atms/{atmId}": { "schema": "ATM", "description": "ATM risk data" },
+    "/settings/{settingKey}": { "schema": "Setting", "description": "System configuration" },
+    "/notifications/{notificationId}": { "schema": "Notification", "description": "System alerts" }
+  }
+}

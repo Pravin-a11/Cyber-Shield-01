@@ -1,0 +1,9 @@
+{
+  "name": "CyberShield Omega",
+  "description": "National Cybercrime Intelligence Platform for predictive analytics, fraud detection, and law enforcement coordination.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

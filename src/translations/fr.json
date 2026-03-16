@@ -1,0 +1,15 @@
+{
+  "dashboard": "Tableau de bord",
+  "complaints": "Plaintes",
+  "intelligence": "Intelligence",
+  "settings": "Paramètres",
+  "risk_heatmap": "Carte thermique des risques",
+  "evidence_locker": "Casier à preuves",
+  "translator": "Traducteur",
+  "officer_management": "Gestion des officiers",
+  "scam_call_analyzer": "Analyseur d'appels frauduleux",
+  "user_profile": "Profil de l'utilisateur",
+  "search": "Rechercher",
+  "notifications": "Notifications",
+  "heatmap": "Carte thermique des risques"
+}
